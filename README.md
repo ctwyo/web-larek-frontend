@@ -41,10 +41,18 @@ npm run build
 yarn build
 ```
 
+# Архитектура MVP
+  * Model - классы Model и AppState
+  * View - классы Component, Card, Page, Form, Basket
+  * Present - классы Api, LarekApi
+
 ### Базовые компоненты
 
 1. # Класс Component<T>
-  Основной класс, предназначеный для остальных компонентов VIEW. Работа с DOM и поведением.
+  Основной класс, основа для остальных компонентов VIEW. Работа с DOM и поведением.
+
+  ## Конструктор
+  * **constructor(protected readonly container: HTMLElement)** - инициализация компонента в заданном контейнере
 
   ## Методы
   * **toggleClass** - переключение класса
@@ -55,7 +63,13 @@ yarn build
   * **render** - render элемента
 
 2. # Класс Api, LarekApi
-  Взаимодействие с сервером, работа с Api
+  Взаимодействие с сервером, работа с Api. LarekAPi расширяет класс Api 
+
+  ## Конструктор Api
+  * **constructor(baseUrl: string, options: RequestInit = {})** - инициализация класса с указанным url и настройками
+
+  ## Конструктор LarekApi
+  * **constructor(cdn: string)** - url для загрузки изображения
 
   ## Данные
   * **baseUrl: string** - основной url
@@ -71,6 +85,9 @@ yarn build
 
 3. # Класс AppState
   Хранение данных
+
+  ## Конструктор
+  * **constructor()** - наследуется от Model
 
   ## Данные
   * **catalog: IProduct[]** - список товаров
@@ -91,6 +108,10 @@ yarn build
 
  4. # Класс Model<T>
   Создание модели и управление данными
+
+  ## Конструктор
+  * **constructor(data: Partial<T>, protected events: IEvents)** - инициализирут модель данных, и подключает события
+
   ## Данные
   * **IEvents** - управление событиями
 
@@ -100,6 +121,9 @@ yarn build
 
 5. # Класс EventEmitter
   Брокер событий
+
+  ## Конструктор
+  * **constructor(_events)** - инициализация коллекции с событиями и подписчиками
 
   ## Методы
   * **on** - устанавливает обработчик
@@ -111,6 +135,9 @@ yarn build
 
  6. # Класс Page
   Главная страница
+
+  ## Конструктор
+  * **constructor(container: HTMLElement, protected events: IEvents)** - инициализирует элементы страницы и объект управления событиями
 
   ## Данные
   * **_counter: HTMLElement** - счётчик корзины
@@ -126,6 +153,9 @@ yarn build
 
 7. # Класс Card<ICard>
   Карточка товара
+
+  ## Конструктор
+  * **constructor(container: HTMLElement, actions?: ICardActions)** - принимает карточку и действия с ней
 
   ## Данные
   * **_title: HTMLElement** - название товара
@@ -146,6 +176,9 @@ yarn build
 8. # Класс Modal<IModalData>
   Модальное окно
 
+  ## Конструктор
+  * **constructor(container: HTMLElement, protected events: IEvents)** - принимает модальное окно и объект управления событиями
+
   ## Данные
  * **_closeButton: HTMLButtonElement** - закрытие модального окна
  * **_content: HTMLElement** - контент модального окна
@@ -155,3 +188,35 @@ yarn build
   * **open** - открыть модальное окно
   * **close** - закрыть модальное окно
   * **render** - render модального окна
+
+  9. # Класс Form
+  Предостовляет функционал для управления формами
+
+  ## Конструктор
+  * **constructor(protected container: HTMLFormElement, protected events: IEvents)** - принимает container и объект с событиями
+
+  ## Данные
+  * **_submit: HTMLButtonElement** - кнопка отправки формы
+  * **_errors?: HTMLElement** - элемент отображения ошибок
+
+  ## Методы
+  * **onInputChange** - вызывается при изменении полей формы
+  * **set valid** - установка валидности формы
+  * **set errors** - установка текста ошибки
+  * **render** - рендер формы с обновлённым состоянии валидности
+
+  10. # Basket
+    Корзина магазина
+
+  ## Коннструктор
+  * **constructor(container: HTMLElement, protected events: IEvents)** - принимает контейнер, и объект событий
+
+  ## Данные
+  * **_list: HTMLElement** - список элементов в корзине
+  * **_total: HTMLElement** - стоимость покупки
+  * **_button: HTMLElement** - кнопка оформления заказа
+
+  ## Методы
+  * **set items** - установка элементов корзины
+  * **set selected** - контроль состояния кнопки в корзине
+  * **set total** - установка текста общей стоимости

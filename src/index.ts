@@ -1,3 +1,5 @@
+import './scss/styles.scss';
+
 import { AppState } from './components/AppData';
 import { Card } from './components/Card';
 import { Contacts } from './components/Contacts';
@@ -8,7 +10,6 @@ import { Success } from './components/Success';
 import { EventEmitter } from './components/base/events';
 import { Basket } from './components/common/Basket';
 import { Modal } from './components/common/Modal';
-import './scss/styles.scss';
 import { IOrder, IOrderForm, IProduct } from './types';
 import { API_URL, CDN_URL } from './utils/constants';
 import { cloneTemplate, createElement, ensureElement } from './utils/utils';
