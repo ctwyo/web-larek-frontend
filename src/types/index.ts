@@ -1,3 +1,15 @@
+export interface IOrderForm {
+  payment?: string;
+  address?: string;
+  email?: string;
+  phone?: string;
+  total?: number | string;
+}
+
+export interface IOrder extends IOrderForm{
+  items: string[];
+}
+
 //data
 export interface IAppState {
   catalog: IProduct[];
@@ -30,17 +42,3 @@ export interface IProduct {
 
 //forms errors
 export type FormErrors = Partial<Record<keyof IOrder, string>>;
-
-//order form
-export interface IOrderForm {
-  payment?: string;
-  address?: string;
-  email?: string;
-  phone?: string;
-  total?: number | string;
-}
-
-//full order
-export interface IOrder extends IOrderForm{
-  items: string[];
-}

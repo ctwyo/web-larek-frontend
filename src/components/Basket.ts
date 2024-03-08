@@ -1,6 +1,6 @@
-import { createElement, ensureElement } from "../../utils/utils";
-import { Component } from "../base/Component";
-import { IEvents } from "../base/events";
+import { createElement, ensureElement } from "../utils/utils";
+import { Component } from "./base/Component";
+import { IEvents } from "./base/Events";
 
 interface IBasketView {
   items: HTMLElement[];
@@ -31,10 +31,10 @@ export class Basket extends Component<IBasketView> {
 
   set items(items: HTMLElement[]) {
     if (items.length) {
+      this._toggleButton(false)
       this._list.replaceChildren(...items);
-      super.setDisabled(this._button, false);
     } else {
-      super.setDisabled(this._button, true);
+      this._toggleButton(true)
       this._list.replaceChildren(createElement<HTMLParagraphElement>('p', {
         textContent: 'Здесь пока ничего нет -_-'
       }));
@@ -43,10 +43,14 @@ export class Basket extends Component<IBasketView> {
 
   set selected(items: string[]) {
     if (items.length) {
-      this.setDisabled(this._button, false);
+      this._toggleButton(false)
     } else {
-      this.setDisabled(this._button, true);
+      this._toggleButton(true)
     }
+  }
+
+  _toggleButton(state: boolean) {
+    this.setDisabled(this._button, state);
   }
 
   set total(total: string) {

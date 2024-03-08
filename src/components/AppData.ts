@@ -4,9 +4,8 @@ import { Model } from "./base/Model";
 export class AppState extends Model<IAppState> {
   catalog: IProduct[];
   basketList: IProduct[] = [];
-  // preview: string | null;
   order: IOrder = {
-    payment: 'card',
+    payment: '',
     address: '',
     email: '',
     phone: '',
@@ -39,10 +38,16 @@ export class AppState extends Model<IAppState> {
     this.emitChanges('items:changed', this.catalog);
   }
 
-  // setPreview(item: IProduct) {
-  //   this.preview = item.id;
-  //   this.emitChanges('preview:changed', item);
-  // }
+  clearOrder() {
+    this.order = {
+      payment: '',
+      address: '',
+      email: '',
+      phone: '',
+      total: 0,
+      items: []
+    }
+  }
 
   clearBasket() {
     this.basketList = [];
@@ -85,6 +90,10 @@ export class AppState extends Model<IAppState> {
     const errors: typeof this.formErrors = {};
     if (!this.order.address) {
       errors.address = 'Необходимо указать адрес';
+    }
+
+    if (!this.order.payment) {
+      errors.payment = 'Необходимо указать способ оплаты';
     }
     
     this.formErrors = errors;

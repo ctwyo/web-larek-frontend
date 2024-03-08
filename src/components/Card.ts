@@ -7,7 +7,7 @@ export interface ICard {
   description: string;
   image?: string;
   category?: string;
-  price: string;
+  price: number;
   index?: number;
   button?: string;
 }
@@ -33,12 +33,13 @@ export class Card extends Component<ICard> {
     this._button = container.querySelector('.card__button');
     this._index = container.querySelector('.basket__item-index');
 
-    if (actions && actions.onClick && this._button) {
-      this._button.addEventListener('click', () => {
-    });
-  }
-
-    container.addEventListener('click', actions.onClick);
+    if (actions?.onClick) {
+      if (this._button) {  // если найдена кнопка, то клик на нее вешается
+          this._button.addEventListener('click', actions.onClick);
+      } else {
+          container.addEventListener('click', actions.onClick); // иначе на весь контейнер
+      }
+    }
   }
 
   set id(value: string) {
@@ -62,7 +63,7 @@ export class Card extends Component<ICard> {
   }
 
   set price(value: string) {
-    this.setText(this._price, value);
+    this.setText(this._price, value ? `${value} синапсов`: 'Бесплатно');
   }
 
   get price(): string {

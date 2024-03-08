@@ -7,12 +7,12 @@ import { LarekApi } from './components/LarekApi';
 import { Order } from './components/Order';
 import { Page } from './components/Page';
 import { Success } from './components/Success';
-import { EventEmitter } from './components/base/events';
-import { Basket } from './components/common/Basket';
+import { EventEmitter } from './components/base/Events';
+import { Basket } from './components/Basket';
 import { Modal } from './components/common/Modal';
-import { IOrder, IOrderForm, IProduct } from './types';
 import { API_URL, CDN_URL } from './utils/constants';
 import { cloneTemplate, createElement, ensureElement } from './utils/utils';
+import { IOrder, IOrderForm, IProduct } from './types';
 
 const cardCatalogTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
 const basketTemplate = ensureElement<HTMLTemplateElement>('#basket');
@@ -49,7 +49,7 @@ events.on('items:changed', () => {
     return card.render({
       title: item.title,
       image: item.image,
-      price: item.price === null ? 'Бесплатно' : `${item.price} синапсов`,
+      price: item.price,
       category: item.category,
     })
   })
@@ -76,7 +76,7 @@ events.on('item:select', (item: IProduct) => {
       title: item.title,
       description: item.description,
       image: item.image,
-      price: item.price === null ? 'Бесплатно' : `${item.price} синапсов`,
+      price: item.price,
       button: appData.getButtonName(item.title),
     })
   })
@@ -109,7 +109,8 @@ events.on('basket:changed', () => {
     })
     return card.render({
       title: item.title,
-      price: item.price === null ? 'Бесплатно' : `${item.price} синапсов`,
+      // price: item.price === null ? 'Бесплатно' : `${item.price} синапсов`,
+      price: item.price,
       index: i++
     })
   })
@@ -128,6 +129,7 @@ events.on('modal:close', () => {
 
 //basket open
 events.on('basket:open', () => {
+  appData.clearOrder()
   basket.total = `${appData.getTotalPrice()} синапсов`
   modal.render({
     content: basket.render()
@@ -135,6 +137,7 @@ events.on('basket:open', () => {
 })
 
 events.on('order:open', () => {
+  appData.validateOrder()
   modal.render({
     content: order.render({
       address: '',
@@ -174,13 +177,11 @@ events.on('contacts:submit', () => {
           total: Number(res.total)
         })
       })
-      appData.validateOrder()
-      appData.clearBasket()
+      basket.items = [];
+      appData.clearBasket();
       page.counter = 0;
     })
-    .catch((err) => {
-      console.log(err)
-    })
+    .catch(console.error)
 })
 
 events.on('payment:change', (item: HTMLButtonElement) => {
@@ -188,6 +189,11 @@ events.on('payment:change', (item: HTMLButtonElement) => {
   appData.validateOrder();
 });
 
+
+events.on('address:change', (item: HTMLInputElement) => {
+  appData.order.address = item.value;
+  appData.validateOrder();
+})
 
 
 events.on('formErrors:change', (errors: Partial<IOrder>) => {
